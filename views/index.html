@@ -2,74 +2,77 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
-	<!-- Add Bootstrap CSS -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
-	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
-	<script>hljs.highlightAll();</script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
 </head>
 
 <body>
-	<div class="container mt-5">
-		<h1 class="display-4 mb-4">Scrapper</h1>
-		<div class="mb-3">
-			<label for="input" class="form-label">Enter Flipkart Link:</label>
-			<input type="text" class="form-control" id="input" placeholder="https://www.flipkart.com/...">
-		</div>
-		<button type="button" class="btn btn-primary mb-3" onclick="scrap()">Submit</button>
-		<!-- Add spinner here -->
-		<div id="spinner" class="d-none text-center">
-			<div class="spinner-border text-primary" role="status">
-				<span class="visually-hidden">Loading...</span>
-			</div>
-		</div>
-		<pre id="json-data" style="white-space: break-spaces;"></pre>
-	</div>
-	<!-- Add Bootstrap JS -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
-	<script>
-		function scrap() {
-			const flipkartLink = document.getElementById("input").value
-			const url = "https://flipkart-scrapper.onrender.com/scrapper"
-			const data = {
-				link: flipkartLink
-			}
+    <div class="container mt-5">
+        <h1 class="display-4 mb-4">Scrapper</h1>
+        <div class="mb-3">
+            <label for="input" class="form-label">Enter Flipkart Link:</label>
+            <input type="text" class="form-control" id="input" placeholder="https://www.flipkart.com/...">
+        </div>
+        <button type="button" class="btn btn-primary mb-3" onclick="scrap()">Submit</button>
+        <!-- Add spinner here -->
+        <div id="spinner" class="d-none text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <pre id="json-data" style="white-space: break-spaces;"></pre>
+    </div>
+    <!-- Add Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function scrap() {
+            const flipkartLink = document.getElementById("input").value
+            const url = "https://flipkart-scrapper.onrender.com/scrapper"
+            const data = {
+                link: flipkartLink
+            }
 
-			// Show spinner here
-			document.getElementById("spinner").classList.remove("d-none");
+            // Clear pre field
+            const preElement = document.getElementById("json-data");
+            preElement.textContent = "";
 
-			fetch(url, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify(data)
-				})
-				.then(response => {
-					if (!response.ok) {
-						throw new Error('Network response was not ok');
-					}
-					return response.json();
-				})
-				.then(data => {
-					const preElement = document.getElementById("json-data");
-					preElement.textContent = JSON.stringify(data, null, 2);
-					hljs.highlightBlock(preElement);
-				})
-				.catch(error => {
-					console.error('There was a problem with the fetch operation:', error);
-				})
-				.finally(() => {
-					// Hide spinner here
-					document.getElementById("spinner").classList.add("d-none");
-				});
+            // Show spinner here
+            document.getElementById("spinner").classList.remove("d-none");
 
-		}
-	</script>
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    preElement.textContent = JSON.stringify(data, null, 2);
+                    hljs.highlightBlock(preElement);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                })
+                .finally(() => {
+                    // Hide spinner here
+                    document.getElementById("spinner").classList.add("d-none");
+                });
+
+        }
+    </script>
 </body>
 
 </html>
