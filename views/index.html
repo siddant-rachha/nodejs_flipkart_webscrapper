@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+    <div style="display: flex;align-items: flex-start;
+    flex-direction: column;">
+        <h1>Scrapper</h1>
+        <input id="input" style="width: 100%;"/>
+        <button onclick="scrap()">Submit</button>
+        <pre id="json-data" style="white-space: break-spaces;"></pre>
+    </div>
+</body>
+
+<script>
+    function scrap() {
+        const flipkartLink = document.getElementById("input").value
+        const url = "http://localhost:5000/scrapper"
+        const data = {
+            link: flipkartLink
+        }
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const preElement = document.getElementById("json-data");
+                preElement.textContent = JSON.stringify(data, null, 2);
+                hljs.highlightBlock(preElement);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+
+    }
+
+</script>
+
+</html>
