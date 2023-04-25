@@ -39,52 +39,70 @@
     <!-- Add Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
     <script>
-function scrap() {
-    const flipkartLink = document.getElementById("input").value;
-    const url = "https://flipkart-scrapper.onrender.com/scrapper";
-    const data = {
-        link: flipkartLink
-    }
 
-    // Clear pre field
-    const preElement = document.getElementById("json-data");
-    preElement.textContent = "";
 
-    // Show spinner and text animation here
-    const spinnerElement = document.getElementById("spinner");
-    spinnerElement.classList.remove("d-none");
-    spinnerElement.innerHTML = `<div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div><p class="my-2">Extracting data, please wait...</p>`;
+        function scrap() {
+            const flipkartLink = document.getElementById("input").value;
+            const url = "https://flipkart-scrapper.onrender.com/scrapper";
+            const data = {
+                link: flipkartLink
+            }
 
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        preElement.textContent = JSON.stringify(data, null, 2);
-        hljs.highlightBlock(preElement);
-    })
-    .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-    })
-    .finally(() => {
-        // Hide spinner and remove text animation
-        spinnerElement.classList.add("d-none");
-        spinnerElement.innerHTML = `<div class="spinner-border text-primary" role="status">
+            // Clear pre field
+            const preElement = document.getElementById("json-data");
+            preElement.textContent = "";
+
+            // Show spinner and text animation here
+            const spinnerElement = document.getElementById("spinner");
+            spinnerElement.classList.remove("d-none");
+            spinnerElement.innerHTML = `
+        <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
-        </div>`;
-    });
-}
+        </div>
+        <p class="my-2" id="timer">0 seconds</p>
+    `;
+
+            // Start timer
+            const startTime = Date.now();
+            const timerElement = document.getElementById("timer");
+            const timerId = setInterval(() => {
+                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                timerElement.textContent = `${elapsedTime} seconds, Extracting data, please wait...`;
+            }, 1000);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    preElement.textContent = JSON.stringify(data, null, 2);
+                    hljs.highlightBlock(preElement);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                })
+                .finally(() => {
+                    // Hide spinner and remove text animation
+                    clearInterval(timerId);
+                    spinnerElement.classList.add("d-none");
+                    spinnerElement.innerHTML = `
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            `;
+                });
+        }
+
+
 
 
     </script>

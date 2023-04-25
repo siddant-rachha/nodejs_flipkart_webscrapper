@@ -19,12 +19,16 @@ router.post("/scrapper", async (req, res) => {
                 // Initiate the browser
                 const browser = await puppeteer.launch({
                     headless:true,
-                    args:[
-                        "--disable-setuid-sandbox",
-                        "--no-sandbox",
-                        "--single-process",
-                        "--no-zygote",
-                    ],
+                    args: [
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--disable-dev-shm-usage',
+                        '--disable-accelerated-2d-canvas',
+                        '--no-first-run',
+                        '--no-zygote',
+                        '--single-process', // <- this one doesn't works in Windows
+                        '--disable-gpu'
+                      ],
                     
                         executablePath:
                             process.env.NODE_ENV === "production"
@@ -34,7 +38,7 @@ router.post("/scrapper", async (req, res) => {
                 // Create a new page with the default browser context
                 const page = await browser.newPage();
                 // Go to the target website
-                await page.goto(url);
+                await page.goto(url, { waitUntil: 'domcontentloaded' })
 
 
                 // Use Puppeteer's API to extract the product price
