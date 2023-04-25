@@ -20,7 +20,7 @@
             <input type="text" class="form-control" id="input" placeholder="https://www.flipkart.com/...product..."
                 value="https://www.flipkart.com/poco-m4-5g-cool-blue-64-gb/p/itm7b27dd2f5da7e?pid=MOBGDRGPD6YGVHXZ&lid=LSTMOBGDRGPD6YGVHXZXRTTHJ&marketplace=FLIPKART&store=tyy%2F4io&srno=b_1_1&otracker=clp_metro_expandable_2_5.metroExpandable.METRO_EXPANDABLE_Shop%2BNow_mobile-phones-store_O1WYX08RHODP_wp2&fm=neo%2Fmerchandising&iid=5fc5672b-3266-407c-ae73-80ff49320f8b.MOBGDRGPD6YGVHXZ.SEARCH&ppt=clp&ppn=mobile-phones-store&ssid=nctnwlxm0w0000001681994021500">
         </div>
-        <button type="button" class="btn btn-primary mb-3" onclick="scrap()">Submit</button>
+        <button type="button" id="button" class="btn btn-primary mb-3" onclick="scrap()">Submit</button>
         <!-- Add spinner here -->
         <div id="spinner" class="d-none text-center">
             <div class="spinner-border text-primary" role="status">
@@ -42,6 +42,8 @@
 
 
         function scrap() {
+            const submitButton = document.getElementById("button");
+            submitButton.disabled = true;
             const flipkartLink = document.getElementById("input").value;
             const url = "https://flipkart-scrapper.onrender.com/scrapper";
             const data = {
@@ -99,6 +101,8 @@
                     <span class="visually-hidden">Loading...</span>
                 </div>
             `;
+                    // Re-enable submit button
+                    submitButton.disabled = false;
                 });
         }
 
