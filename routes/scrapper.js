@@ -18,6 +18,7 @@ router.post("/scrapper", async (req, res) => {
             try {
                 // Initiate the browser
                 const browser = await puppeteer.launch({
+                    headless:true,
                     args:[
                         "--disable-setuid-sandbox",
                         "--no-sandbox",
