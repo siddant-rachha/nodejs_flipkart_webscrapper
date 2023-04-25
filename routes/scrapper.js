@@ -10,7 +10,7 @@ router.post("/scrapper", async (req, res) => {
 
     scrapeData(url)
         .then(() => console.log('Success!'))
-        .catch((error) => res.json("Something went wrong"));
+        .catch((error) => res.json(error));
 
     function scrapeData(url) {
 
