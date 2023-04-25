@@ -5,20 +5,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Flipkart Scrapper</title>
     <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
 </head>
 
 <body>
     <div class="container mt-5">
-        <h1 class="display-4 mb-4">Scrapper</h1>
+        <h1 class="display-4 mb-4">Flipkart Scrapper</h1>
         <div class="mb-3">
             <label for="input" class="form-label">Enter Any Flipkart Product Link:</label>
-            <input type="text" class="form-control" id="input" placeholder="https://www.flipkart.com/...product..." value="https://www.flipkart.com/poco-m4-5g-cool-blue-64-gb/p/itm7b27dd2f5da7e?pid=MOBGDRGPD6YGVHXZ&lid=LSTMOBGDRGPD6YGVHXZXRTTHJ&marketplace=FLIPKART&store=tyy%2F4io&srno=b_1_1&otracker=clp_metro_expandable_2_5.metroExpandable.METRO_EXPANDABLE_Shop%2BNow_mobile-phones-store_O1WYX08RHODP_wp2&fm=neo%2Fmerchandising&iid=5fc5672b-3266-407c-ae73-80ff49320f8b.MOBGDRGPD6YGVHXZ.SEARCH&ppt=clp&ppn=mobile-phones-store&ssid=nctnwlxm0w0000001681994021500">
+            <input type="text" class="form-control" id="input" placeholder="https://www.flipkart.com/...product..."
+                value="https://www.flipkart.com/poco-m4-5g-cool-blue-64-gb/p/itm7b27dd2f5da7e?pid=MOBGDRGPD6YGVHXZ&lid=LSTMOBGDRGPD6YGVHXZXRTTHJ&marketplace=FLIPKART&store=tyy%2F4io&srno=b_1_1&otracker=clp_metro_expandable_2_5.metroExpandable.METRO_EXPANDABLE_Shop%2BNow_mobile-phones-store_O1WYX08RHODP_wp2&fm=neo%2Fmerchandising&iid=5fc5672b-3266-407c-ae73-80ff49320f8b.MOBGDRGPD6YGVHXZ.SEARCH&ppt=clp&ppn=mobile-phones-store&ssid=nctnwlxm0w0000001681994021500">
         </div>
         <button type="button" class="btn btn-primary mb-3" onclick="scrap()">Submit</button>
         <!-- Add spinner here -->
@@ -26,52 +26,67 @@
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
+            <div class="mt-2">
+                <span id="spinner-text" class="text-muted">Extracting data</span>
+                <span id="spinner-animation" class="d-none">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="spinner-text ms-2"></span>
+                </span>
+            </div>
         </div>
         <pre id="json-data" style="white-space: break-spaces;"></pre>
     </div>
     <!-- Add Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
     <script>
-        function scrap() {
-            const flipkartLink = document.getElementById("input").value
-            const url = "https://flipkart-scrapper.onrender.com/scrapper"
-            const data = {
-                link: flipkartLink
-            }
+function scrap() {
+    const flipkartLink = document.getElementById("input").value;
+    const url = "https://flipkart-scrapper.onrender.com/scrapper";
+    const data = {
+        link: flipkartLink
+    }
 
-            // Clear pre field
-            const preElement = document.getElementById("json-data");
-            preElement.textContent = "";
+    // Clear pre field
+    const preElement = document.getElementById("json-data");
+    preElement.textContent = "";
 
-            // Show spinner here
-            document.getElementById("spinner").classList.remove("d-none");
+    // Show spinner and text animation here
+    const spinnerElement = document.getElementById("spinner");
+    spinnerElement.classList.remove("d-none");
+    spinnerElement.innerHTML = `<div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div><p class="my-2">Extracting data, please wait...</p>`;
 
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    preElement.textContent = JSON.stringify(data, null, 2);
-                    hljs.highlightBlock(preElement);
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                })
-                .finally(() => {
-                    // Hide spinner here
-                    document.getElementById("spinner").classList.add("d-none");
-                });
-
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
+        return response.json();
+    })
+    .then(data => {
+        preElement.textContent = JSON.stringify(data, null, 2);
+        hljs.highlightBlock(preElement);
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    })
+    .finally(() => {
+        // Hide spinner and remove text animation
+        spinnerElement.classList.add("d-none");
+        spinnerElement.innerHTML = `<div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>`;
+    });
+}
+
+
     </script>
 </body>
 
